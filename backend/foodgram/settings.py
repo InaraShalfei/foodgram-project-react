@@ -155,5 +155,6 @@ AUTH_USER_MODEL = 'users.User'
 DJOSER = {
     'SERIALIZERS': {
          # 'user_create': 'users.serializers.UserRegistrationSerializer'
-    }
+    },
+    'HIDE_USERS': False
 }
