@@ -1,7 +1,7 @@
-from rest_framework import mixins, viewsets
+from rest_framework import filters, mixins, viewsets
 
-from api.models import Tag
-from api.serializers import TagSerializer
+from api.models import Tag, Ingredient
+from api.serializers import TagSerializer, IngredientSerializer
 
 
 class ViewSet(mixins.ListModelMixin,
@@ -16,4 +16,10 @@ class TagViewSet(ViewSet):
     pagination_class = None
 
 
+class IngredientViewSet(ViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    pagination_class = None
+    filter_backends = [filters.SearchFilter]
+    search_fields = ('^name',)
 
