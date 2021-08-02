@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 
 from api.models import Tag, Ingredient
@@ -20,6 +21,6 @@ class IngredientViewSet(ViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
-    filter_backends = [filters.SearchFilter]
+    filter_backends = (filters.SearchFilter, )
     search_fields = ('^name',)
 
