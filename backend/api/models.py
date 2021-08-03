@@ -1,4 +1,4 @@
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -39,7 +39,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(Ingredient, related_name='recipes')
     tags = models.ManyToManyField(Tag, related_name='recipes')
     text = models.TextField(max_length=1000, verbose_name='description')
-    cooking_time = models.IntegerField(verbose_name='time', validators=[MinLengthValidator(1)])
+    cooking_time = models.IntegerField(verbose_name='time', validators=[MinValueValidator(1)])
     image = models.ImageField(upload_to='media')
 
     class Meta:
