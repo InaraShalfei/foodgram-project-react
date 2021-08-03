@@ -1,8 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 
-from api.models import Tag, Ingredient
-from api.serializers import TagSerializer, IngredientSerializer
+from api.models import Tag, Ingredient, Recipe
+from api.serializers import TagSerializer, IngredientSerializer, RecipeSerializer
 
 
 class ViewSet(mixins.ListModelMixin,
@@ -24,3 +24,7 @@ class IngredientViewSet(ViewSet):
     filter_backends = (filters.SearchFilter, )
     search_fields = ('^name',)
 
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
