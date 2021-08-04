@@ -28,3 +28,7 @@ class IngredientViewSet(ViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    # TODO copy author assignment from api_yamdb reviews.views.ReviewViewSet
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
