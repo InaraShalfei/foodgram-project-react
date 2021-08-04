@@ -1,11 +1,13 @@
 import imghdr
-
-import webcolors as webcolors
-from rest_framework import serializers
-from django.core.files.base import ContentFile
 import base64
 import six
 import uuid
+import webcolors as webcolors
+
+from djoser.serializers import UserSerializer
+from rest_framework import serializers
+from django.core.files.base import ContentFile
+
 
 from api.models import Ingredient, Recipe, Tag
 
@@ -62,8 +64,13 @@ class IngredientSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = IngredientSerializer(many=True, read_only=True)
-    tags = TagSerializer(many=True, read_only=True)
+    tags = serializers.SlugRelatedField(
+        queryset=Tag.objects.all(),
+        slug_field='id',
+        many=True
+    )
+    author = UserSerializer(read_only=True)
 
     class Meta:
-        fields = ('name', 'ingredients', 'tags', 'text', 'image', 'cooking_time')
+        fields = ('id', 'author', 'name', 'ingredients', 'tags', 'text', 'image', 'cooking_time')
         model = Recipe
