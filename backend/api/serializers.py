@@ -9,7 +9,7 @@ from rest_framework import serializers
 from django.core.files.base import ContentFile
 
 
-from api.models import Ingredient, Recipe, Tag
+from api.models import Ingredient, Recipe, Tag, RecipeIngredient
 
 
 class Hex2NameColor(serializers.Field):
@@ -57,13 +57,19 @@ class TagSerializer(serializers.ModelSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('name', 'id', 'measurement_unit')
+        fields = '__all__'
         model = Ingredient
+
+
+class RecipeIngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('amount')
+        model = RecipeIngredient
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    ingredients = IngredientSerializer(many=True, read_only=True)
+    ingredients = RecipeIngredientSerializer(source='recipeorders_set', many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
 
@@ -74,11 +80,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    ingredients = IngredientSerializer(many=True, read_only=True)
+    ingredients = IngredientSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
 
     class Meta:
-        #fields = ('name', 'ingredients', 'tags', 'text', 'image', 'cooking_time')
         model = Recipe
         exclude = ['author']
 
