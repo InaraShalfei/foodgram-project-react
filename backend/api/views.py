@@ -1,4 +1,3 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 
 from api.models import Tag, Ingredient, Recipe
@@ -31,13 +30,13 @@ class IngredientViewSet(ViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeReadSerializer
-    # TODO copy author assignment from api_yamdb reviews.views.ReviewViewSet
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'list']:
             return RecipeReadSerializer
         return RecipeWriteSerializer
 
+    def get_serializer_context(self):
+        context = super(RecipeViewSet, self).get_serializer_context()
+        context.update({"author": self.request.user})
+        return context

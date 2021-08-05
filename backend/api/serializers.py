@@ -60,18 +60,19 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
 
 
-class RecipeIngredientSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(read_only=True, source='ingredient.pk')
+class RecipeIngredientReadSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True, source='ingredient.id')
     name = serializers.CharField(read_only=True, source='ingredient.name')
+    measurement_unit = serializers.CharField(read_only=True, source='ingredient.measurement_unit')
 
     class Meta:
-        fields = ('amount', 'id', 'name', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
         model = RecipeIngredient
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    ingredients = RecipeIngredientSerializer(many=True, read_only=True)
+    ingredients = RecipeIngredientReadSerializer(many=True, read_only=True, source='recipe_ingredients')
     tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
 
@@ -80,9 +81,18 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         model = Recipe
 
 
+class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField()
+
+    class Meta:
+        fields = ('id', 'amount')
+        model = RecipeIngredient
+
+
 class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    ingredients = IngredientSerializer(many=True)
+    ingredients = RecipeIngredientWriteSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
 
     class Meta:
@@ -92,3 +102,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serializer = RecipeReadSerializer(instance)
         return serializer.data
+
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(author=self.context.get('author'), **validated_data)
+        for item in ingredients:
+            RecipeIngredient.objects.create(amount=item.pop('amount'), ingredient=item.pop('id'), recipe=recipe)
+        recipe.tags.set(tags)
+        return recipe
