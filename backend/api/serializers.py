@@ -62,14 +62,17 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True, source='ingredient.pk')
+    name = serializers.CharField(read_only=True, source='ingredient.name')
+
     class Meta:
-        fields = ('amount')
+        fields = ('amount', 'id', 'name', 'measurement_unit')
         model = RecipeIngredient
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    ingredients = RecipeIngredientSerializer(source='recipeorders_set', many=True, read_only=True)
+    ingredients = RecipeIngredientSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
 
