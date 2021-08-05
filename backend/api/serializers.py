@@ -61,16 +61,27 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
 
 
-class RecipeSerializer(serializers.ModelSerializer):
+class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = IngredientSerializer(many=True, read_only=True)
-    tags = serializers.SlugRelatedField(
-        queryset=Tag.objects.all(),
-        slug_field='id',
-        many=True
-    )
+    tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
 
     class Meta:
         fields = ('id', 'author', 'name', 'ingredients', 'tags', 'text', 'image', 'cooking_time')
         model = Recipe
+
+
+class RecipeWriteSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
+    ingredients = IngredientSerializer(many=True, read_only=True)
+    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
+
+    class Meta:
+        #fields = ('name', 'ingredients', 'tags', 'text', 'image', 'cooking_time')
+        model = Recipe
+        exclude = ['author']
+
+    def to_representation(self, instance):
+        serializer = RecipeReadSerializer(instance)
+        return serializer.data
