@@ -1,6 +1,8 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from users.models import User
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, verbose_name='name', unique=True)
@@ -36,6 +38,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=200, verbose_name='name', unique=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField(Ingredient, related_name='recipes')
     tags = models.ManyToManyField(Tag, related_name='recipes')
     text = models.TextField(max_length=1000, verbose_name='description')
