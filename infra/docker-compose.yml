@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - c:/Users/Inara/Dev/foodgram-project-react/backend:/code/
+      - ../backend:/code/
       - static_value:/code/static/
       - media_value:/code/media/
     depends_on:
@@ -42,9 +42,8 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
-# TODO uncomment when need to deploy on prod
-#      - static_value:/var/html/static/
-#      - media_value:/var/html/media/
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
     depends_on:
       - frontend
       - web
