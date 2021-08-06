@@ -8,7 +8,7 @@ from djoser.serializers import UserSerializer
 from rest_framework import serializers
 from django.core.files.base import ContentFile
 
-from api.models import Ingredient, Recipe, Tag, RecipeIngredient
+from api.models import Ingredient, Recipe, Tag, RecipeIngredient, FavoriteRecipe
 
 
 class Hex2NameColor(serializers.Field):
@@ -126,3 +126,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return instance
 
 
+class FavoriteRecipeSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True, source='recipe.id')
+    cooking_time = serializers.CharField(read_only=True, source='recipe.cooking_time')
+    image = serializers.CharField(read_only=True, source='recipe.image')
+    name = serializers.CharField(read_only=True, source='recipe.name')
+
+    class Meta:
+        fields = ('id', 'cooking_time', 'name', 'image')
+        model = FavoriteRecipe
