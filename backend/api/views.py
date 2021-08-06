@@ -63,5 +63,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(serializer.to_representation(instance=favorite_recipe), status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
-            FavoriteRecipe.objects.fiter(user=user, recipe=recipe).delete()
+            FavoriteRecipe.objects.filter(user=user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
