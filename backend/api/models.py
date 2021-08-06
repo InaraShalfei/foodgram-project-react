@@ -68,3 +68,17 @@ class RecipeIngredient(models.Model):
             )
         ]
 
+
+class FavoriteRecipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorite_recipes')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favorite_recipes')
+
+    class Meta:
+        verbose_name = 'Favorite recipe'
+        verbose_name_plural = 'Favorite recipes'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'user'],
+                name='unique_favorite'
+            )
+        ]
