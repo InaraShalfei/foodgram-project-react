@@ -53,7 +53,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         context.update({"author": self.request.user})
         return context
 
-    @action(detail=True, methods=['get', 'delete'], url_path='favorite', permission_classes=super().get_permissions())
+    @action(detail=True, methods=['get', 'delete'], url_path='favorite', permission_classes=permissions.IsAuthenticatedOrReadOnly)
     def favorite(self, request, pk):
         recipe = Recipe.objects.get(pk=pk)
         user = request.user
