@@ -1,7 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, viewsets
+from rest_framework import filters, mixins, viewsets, permissions
 
 from api.models import Tag, Ingredient, Recipe
+from api.permissions import OwnerOrReadOnly
 from api.serializers import (
     TagSerializer, IngredientSerializer,
     RecipeWriteSerializer, RecipeReadSerializer
@@ -33,6 +34,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeReadSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['author', 'tags']
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get_permissions(self):
+        if self.action == 'put' or 'delete':
+            return OwnerOrReadOnly(),
+        return super().get_permissions()
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'list']:
