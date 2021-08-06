@@ -55,14 +55,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get', 'delete'], url_path='favorite', permission_classes=super().get_permissions())
     def favorite(self, request, pk):
+        recipe = Recipe.objects.get(pk=pk)
+        user = request.user
         if request.method == 'GET':
-            recipe = Recipe.objects.get(pk=pk)
-            user = request.user
             favorite_recipe, created = FavoriteRecipe.objects.get_or_create(user=user, recipe=recipe)
             serializer = FavoriteRecipeSerializer()
-
             return Response(serializer.to_representation(instance=favorite_recipe), status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
-            FavoriteRecipe.objects.get(pk=pk).delete()
+            FavoriteRecipe.objects.fiter(user=user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
