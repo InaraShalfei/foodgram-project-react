@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 
 from api.models import Tag, Ingredient, Recipe
@@ -30,6 +31,8 @@ class IngredientViewSet(ViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeReadSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['author', 'tags']
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'list']:
