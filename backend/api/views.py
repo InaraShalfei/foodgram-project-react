@@ -1,11 +1,13 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, viewsets, permissions
+from rest_framework import filters, mixins, viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from api.models import Tag, Ingredient, Recipe
+from api.models import Tag, Ingredient, Recipe, FavoriteRecipe
 from api.permissions import OwnerOrReadOnly
 from api.serializers import (
     TagSerializer, IngredientSerializer,
-    RecipeWriteSerializer, RecipeReadSerializer
+    RecipeWriteSerializer, RecipeReadSerializer, FavoriteRecipeSerializer
 )
 
 
@@ -25,7 +27,7 @@ class IngredientViewSet(ViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
-    filter_backends = (filters.SearchFilter, )
+    filter_backends = (filters.SearchFilter,)
     search_fields = ('^name',)
 
 
@@ -50,3 +52,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         context = super(RecipeViewSet, self).get_serializer_context()
         context.update({"author": self.request.user})
         return context
+
+    @action(detail=True, methods=['get', 'delete'], url_path='favorite', permission_classes=super().get_permissions())
+    def favorite(self, request, pk):
+        if request.method == 'GET':
+            recipe = Recipe.objects.get(pk=pk)
+            user = request.user
+            favorite_recipe, created = FavoriteRecipe.objects.get_or_create(user=user, recipe=recipe)
+            serializer = FavoriteRecipeSerializer()
+
+            return Response(serializer.to_representation(instance=favorite_recipe), status=status.HTTP_201_CREATED)
+
+        if request.method == 'DELETE':
+            FavoriteRecipe.objects.get(pk=pk).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
