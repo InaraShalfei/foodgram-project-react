@@ -44,8 +44,10 @@ class Recipe(models.Model):
     text = models.TextField(max_length=1000, verbose_name='description')
     cooking_time = models.IntegerField(verbose_name='time', validators=[MinValueValidator(1)])
     image = models.ImageField(upload_to='media')
+    creation_date = models.DateTimeField("Date of creation", auto_now_add=True, db_index=True)
 
     class Meta:
+        ordering = ['-creation_date']
         verbose_name = 'Recipe'
         verbose_name_plural = 'Recipes'
 
@@ -57,10 +59,8 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='recipe_ingredients')
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='recipe_ingredients')
     amount = models.PositiveIntegerField(verbose_name='amount of ingredient')
-    creation_date = models.DateTimeField("Date of creation", auto_now_add=True, db_index=True)
 
     class Meta:
-        ordering = ['-creation_date']
         verbose_name = 'Ingredient in recipe'
         verbose_name_plural = 'Ingredients in recipe'
         constraints = [
