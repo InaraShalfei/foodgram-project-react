@@ -3,11 +3,11 @@ from rest_framework import filters, mixins, viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from api.models import Tag, Ingredient, Recipe, FavoriteRecipe
+from api.models import Tag, Ingredient, Recipe, FavoriteRecipe, ShoppingCart
 from api.permissions import OwnerOrReadOnly
 from api.serializers import (
     TagSerializer, IngredientSerializer,
-    RecipeWriteSerializer, RecipeReadSerializer, FavoriteRecipeSerializer
+    RecipeWriteSerializer, RecipeReadSerializer, FavoriteRecipeSerializer, ShoppingCartSerializer
 )
 
 
@@ -64,4 +64,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         if request.method == 'DELETE':
             FavoriteRecipe.objects.filter(user=user, recipe=recipe).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['get', 'delete'], url_path='shopping_cart',
+            permission_classes=permissions.IsAuthenticatedOrReadOnly)
+    def shopping_cart(self, request, pk):
+        recipe = Recipe.objects.get(pk=pk)
+        user = request.user
+        if request.method == 'GET':
+            recipe, created = ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
+            serializer = ShoppingCartSerializer()
+            return Response(serializer.to_representation(instance=recipe), status=status.HTTP_201_CREATED)
+
+        if request.method == 'DELETE':
+            ShoppingCart.objects.filter(user=user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
