@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets, permissions, status
 from rest_framework.decorators import action
@@ -94,4 +95,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     shopping_list[name] = {'name': name, 'measurement_unit': measurement_unit, 'amount': amount}
                 else:
                     shopping_list[name]['amount'] += amount
-        return Response(shopping_list)
+        content = [f'{item["name"]} ({item["measurement_unit"]}) - {item["amount"]}\n' for item in shopping_list.values()]
+        filename = 'shopping_list.txt'
+        response = HttpResponse(content, content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+        return response
