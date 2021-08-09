@@ -44,7 +44,7 @@ class Recipe(models.Model):
     text = models.TextField(max_length=1000, verbose_name='description')
     cooking_time = models.IntegerField(verbose_name='time', validators=[MinValueValidator(1)])
     image = models.ImageField(upload_to='media')
-    creation_date = models.DateTimeField("Date of creation", auto_now_add=True, db_index=True)
+    creation_date = models.DateTimeField('Date of creation', db_index=True, auto_now=True)
 
     class Meta:
         ordering = ['-creation_date']
