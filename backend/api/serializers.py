@@ -83,10 +83,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         model = Recipe
 
     def get_is_favorited(self, obj):
-        return FavoriteRecipe.objects.filter(id=obj.id).exists()
+        return FavoriteRecipe.objects.filter(recipe=obj, user=self.context.get('user')).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        return ShoppingCart.objects.filter(id=obj.id).exists()
+        return ShoppingCart.objects.filter(recipe=obj, user=self.context.get('user')).exists()
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
@@ -114,7 +114,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(author=self.context.get('author'), **validated_data)
+        recipe = Recipe.objects.create(author=self.context.get('user'), **validated_data)
         for item in ingredients:
             RecipeIngredient.objects.create(amount=item.pop('amount'), ingredient=item.pop('id'), recipe=recipe)
         recipe.tags.set(tags)
