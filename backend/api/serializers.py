@@ -83,10 +83,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         model = Recipe
 
     def get_is_favorited(self, obj):
-        return obj.name == FavoriteRecipe.objects.filter(recipe__name=obj.name)
+        return FavoriteRecipe.objects.filter(id=obj.id).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        return obj.name == ShoppingCart.objects.filter(recipe__name=obj.name)
+        return ShoppingCart.objects.filter(id=obj.id).exists()
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
