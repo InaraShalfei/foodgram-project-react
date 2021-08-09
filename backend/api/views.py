@@ -84,11 +84,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=permissions.IsAuthenticated)
     def shopping_list(self, request):
         shopping_cart = ShoppingCart.objects.filter(user=request.user).all()
-        shopping_list = []
+        shopping_list = {}
         for item in shopping_cart:
             for recipe_ingredient in item.recipe.recipe_ingredients.all():
                 name = recipe_ingredient.ingredient.name
                 measurement_unit = recipe_ingredient.ingredient.measurement_unit
                 amount = recipe_ingredient.amount
-                shopping_list.append({'name': name, 'measurement_unit': measurement_unit, 'amount': amount})
+                if name not in shopping_list:
+                    shopping_list[name] = {'name': name, 'measurement_unit': measurement_unit, 'amount': amount}
+                else:
+                    shopping_list[name]['amount'] += amount
         return Response(shopping_list)
