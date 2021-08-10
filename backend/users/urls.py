@@ -8,7 +8,12 @@ subscribe = UserViewSet.as_view({
     'delete': 'subscribe'
 })
 
+subscriptions = UserViewSet.as_view({
+    'get': 'subscriptions',
+   })
+
 urlpatterns = [
+    path('users/subscriptions/', subscriptions, name='subscriptions'),
     path('', include('djoser.urls')),
     url(r'^auth/', include('djoser.urls.jwt')),
     url(r'^auth/', include('djoser.urls.authtoken')),
