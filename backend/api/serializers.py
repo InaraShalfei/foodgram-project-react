@@ -9,6 +9,7 @@ from rest_framework import serializers
 from django.core.files.base import ContentFile
 
 from api.models import Ingredient, Recipe, Tag, RecipeIngredient, FavoriteRecipe, ShoppingCart
+from users.seriliazers import CustomUserSerializer
 
 
 class Hex2NameColor(serializers.Field):
@@ -74,7 +75,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = RecipeIngredientReadSerializer(many=True, read_only=True, source='recipe_ingredients')
     tags = TagSerializer(many=True, read_only=True)
-    author = UserSerializer(read_only=True)
+    author = CustomUserSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField('get_is_favorited')
     is_in_shopping_cart = serializers.SerializerMethodField('get_is_in_shopping_cart')
 
