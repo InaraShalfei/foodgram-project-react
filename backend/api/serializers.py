@@ -9,7 +9,7 @@ from rest_framework import serializers
 from django.core.files.base import ContentFile
 
 from api.models import Ingredient, Recipe, Tag, RecipeIngredient, FavoriteRecipe, ShoppingCart
-from users.seriliazers import CustomUserSerializer
+from users.serializers import CustomUserSerializer
 
 
 class Hex2NameColor(serializers.Field):
