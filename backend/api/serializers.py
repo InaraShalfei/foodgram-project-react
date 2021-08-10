@@ -8,6 +8,7 @@ from rest_framework import serializers
 from django.core.files.base import ContentFile
 
 from api.models import Ingredient, Recipe, Tag, RecipeIngredient, FavoriteRecipe, ShoppingCart
+from users.mixins import IsSubscribedMixin
 from users.models import User
 from users.serializers import CustomUserSerializer
 
@@ -163,12 +164,12 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         model = ShoppingCart
 
 
-class UserFollowSerializer(serializers.ModelSerializer):
+class UserFollowedSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     recipes = RecipeShortRead(many=True, read_only=True)
     recipes_count = serializers.SerializerMethodField('get_recipes_count')
 
     class Meta:
-        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'recipes', 'recipes_count')
+        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'recipes', 'recipes_count', 'is_subscribed')
         model = User
 
     def get_recipes_count(self, obj):
