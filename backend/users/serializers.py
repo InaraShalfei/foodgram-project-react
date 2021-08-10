@@ -19,4 +19,3 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         return True
-
