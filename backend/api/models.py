@@ -99,3 +99,18 @@ class ShoppingCart(models.Model):
                 name='unique_recipe_to_add'
             )
         ]
+
+
+class UserFollow(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_following')
+    followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_followed')
+
+    class Meta:
+        verbose_name = 'Following user'
+        verbose_name_plural = 'Following users'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['follower', 'followed'],
+                name='unique_following'
+            )
+        ]
