@@ -1,14 +1,17 @@
-from rest_framework import viewsets, permissions, status
+import djoser.views
+
+from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.serializers import ListSerializer
 
 from api.models import UserFollow
-from api.serializers import UserFollowSerializer
+from api.serializers import UserFollowedSerializer
 from users.models import User
 from users.serializers import CustomUserSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(djoser.views.UserViewSet):
     serializer_class = CustomUserSerializer
     queryset = User.objects.all()
 
@@ -19,12 +22,20 @@ class UserViewSet(viewsets.ModelViewSet):
         follower = request.user
         if request.method == 'GET':
             UserFollow.objects.get_or_create(follower=follower, followed=followed)
-            serializer = UserFollowSerializer()
+            serializer = UserFollowedSerializer(context=self.get_serializer_context())
             return Response(serializer.to_representation(instance=followed), status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
             UserFollow.objects.filter(follower=follower, followed=followed).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['get'], url_path='subscriptions',
+            permission_classes=permissions.IsAuthenticated)
+    def subscriptions(self, request):
+        subscriptions = UserFollow.objects.filter(follower=request.user).all()
+        followed_list = [subscription.followed for subscription in subscriptions]
+        serializer = ListSerializer(child=UserFollowedSerializer(), context=self.get_serializer_context())
+        return Response(serializer.to_representation(followed_list), status=status.HTTP_201_CREATED)
 
 
 
