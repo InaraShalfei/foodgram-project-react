@@ -4,11 +4,11 @@ import six
 import uuid
 import webcolors as webcolors
 
-from djoser.serializers import UserSerializer
 from rest_framework import serializers
 from django.core.files.base import ContentFile
 
 from api.models import Ingredient, Recipe, Tag, RecipeIngredient, FavoriteRecipe, ShoppingCart
+from users.models import User
 from users.serializers import CustomUserSerializer
 
 
@@ -90,6 +90,12 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         return ShoppingCart.objects.filter(recipe=obj, user=self.context.get('user')).exists()
 
 
+class RecipeShortRead(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'cooking_time', 'name', 'image')
+        model = Recipe
+
+
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField()
@@ -155,3 +161,16 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'cooking_time', 'name', 'image')
         model = ShoppingCart
+
+
+class UserFollowSerializer(serializers.ModelSerializer):
+    recipes = RecipeShortRead(many=True, read_only=True)
+    recipes_count = serializers.SerializerMethodField('get_recipes_count')
+
+    class Meta:
+        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'recipes', 'recipes_count')
+        model = User
+
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter(author=obj).count()
+
