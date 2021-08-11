@@ -39,6 +39,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_fields = ['author', 'tags']
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
+    def get_queryset(self):
+        queryset = Recipe.objects.all()
+        is_in_shopping_cart = self.request.query_params.get('is_in_shopping_cart')
+        is_favorited = self.request.query_params.get('is_favorited')
+        queryset = queryset.filter(is_in_shopping_cart=is_in_shopping_cart, is_favorited=is_favorited)
+        return queryset
+
     def get_permissions(self):
         if self.action == 'put' or 'delete':
             return OwnerOrReadOnly(),
