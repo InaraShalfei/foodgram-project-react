@@ -19,6 +19,6 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tag)
-admin.site.register(Ingredient)
-admin.site.register(Recipe)
-admin.site.register(User)
+admin.site.register(Ingredient, IngredientAdmin)
+admin.site.register(Recipe, RecipeAdmin)
+admin.site.register(User, UserAdmin)
