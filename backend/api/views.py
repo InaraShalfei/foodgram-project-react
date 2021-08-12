@@ -36,14 +36,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeReadSerializer
     filter_backends = [DjangoFilterBackend]
+    # TODO filter tags by slug not by PK
     filterset_fields = ['author', 'tags']
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
         is_in_shopping_cart = self.request.query_params.get('is_in_shopping_cart')
-        is_favorited = self.request.query_params.get('is_favorited')
-        queryset = queryset.filter(is_in_shopping_cart=is_in_shopping_cart, is_favorited=is_favorited)
+        is_favorited = bool(int(self.request.query_params.get('is_favorited')))
+        # TODO filter is_in_shopping_cart as is_favorited
+        if is_in_shopping_cart is not None:
+            queryset = queryset.filter(is_in_shopping_cart=is_in_shopping_cart)
+        if is_favorited:
+            queryset = queryset.filter(favorite_recipes__user=self.request.user)
         return queryset
 
     def get_permissions(self):
