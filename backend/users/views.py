@@ -2,6 +2,7 @@ import djoser.views
 
 from rest_framework import permissions, status
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
 
@@ -33,9 +34,9 @@ class UserViewSet(djoser.views.UserViewSet):
             permission_classes=permissions.IsAuthenticated)
     def subscriptions(self, request):
         subscriptions = UserFollow.objects.filter(follower=request.user).all()
-        followed_list = [subscription.followed for subscription in subscriptions]
+        paginator = PageNumberPagination()
+        paginator.page_size_query_param = 'limit'
+        subscripitons_page = paginator.paginate_queryset(subscriptions, request=request)
+        followed_list = [subscription.followed for subscription in subscripitons_page]
         serializer = ListSerializer(child=UserFollowedSerializer(), context=self.get_serializer_context())
-        return Response(serializer.to_representation(followed_list), status=status.HTTP_201_CREATED)
-
-
-
+        return paginator.get_paginated_response(serializer.to_representation(followed_list))
