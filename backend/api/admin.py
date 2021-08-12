@@ -20,13 +20,16 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author')
+    list_display = ('name', 'author', 'favorited_count')
     list_filter = ('author', 'name', 'tags')
     inlines = (RecipeIngredientInline,)
+    readonly_fields = ['favorited_count']
+
+    def favorited_count(self, obj):
+        return obj.favorite_recipes.count()
 
 
 admin.site.register(Tag)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(User, UserAdmin)
-admin.site.register(RecipeIngredient)
