@@ -4,6 +4,7 @@ from rest_framework import filters, mixins, viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from api.filters import RecipeFilter
 from api.models import Tag, Ingredient, Recipe, FavoriteRecipe, ShoppingCart
 from api.permissions import OwnerOrReadOnly
 from api.serializers import (
@@ -36,8 +37,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeReadSerializer
     filter_backends = [DjangoFilterBackend]
-    # TODO filter tags by slug not by PK
-    filterset_fields = ['author', 'tags']
+    filter_class = RecipeFilter
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
