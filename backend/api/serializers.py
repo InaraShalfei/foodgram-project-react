@@ -180,4 +180,3 @@ class UserFollowedSerializer(serializers.ModelSerializer, IsSubscribedMixin):
         recipes = obj.recipes.all()[:int(recipes_limit)] if recipes_limit else obj.recipes
         serializer = serializers.ListSerializer(child=RecipeShortRead())
         return serializer.to_representation(recipes)
-
