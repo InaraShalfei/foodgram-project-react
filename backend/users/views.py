@@ -36,7 +36,7 @@ class UserViewSet(djoser.views.UserViewSet):
         subscriptions = UserFollow.objects.filter(follower=request.user).all()
         paginator = PageNumberPagination()
         paginator.page_size_query_param = 'limit'
-        subscripitons_page = paginator.paginate_queryset(subscriptions, request=request)
-        followed_list = [subscription.followed for subscription in subscripitons_page]
+        subscriptions_page = paginator.paginate_queryset(subscriptions, request=request)
+        followed_list = [subscription.followed for subscription in subscriptions_page]
         serializer = ListSerializer(child=UserFollowedSerializer(), context=self.get_serializer_context())
         return paginator.get_paginated_response(serializer.to_representation(followed_list))
