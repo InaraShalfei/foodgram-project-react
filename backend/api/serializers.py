@@ -132,7 +132,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        # TODO:update existing ingredients(without deleting)
         RecipeIngredient.objects.filter(recipe=instance).delete()
         for item in ingredients:
             RecipeIngredient.objects.create(amount=item.pop('amount'), ingredient=item.pop('id'), recipe=instance)
