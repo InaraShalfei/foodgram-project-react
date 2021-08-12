@@ -166,7 +166,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
 
 class UserFollowedSerializer(serializers.ModelSerializer, IsSubscribedMixin):
-    recipes = RecipeShortRead(many=True, read_only=True)
+    recipes = serializers.SerializerMethodField('get_recipes')
     recipes_count = serializers.SerializerMethodField('get_recipes_count')
 
     class Meta:
@@ -175,4 +175,10 @@ class UserFollowedSerializer(serializers.ModelSerializer, IsSubscribedMixin):
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()
+
+    def get_recipes(self, obj):
+        recipes_limit = self.context.get('request').GET.get('recipes_limit')
+        recipes = obj.recipes.all()[:int(recipes_limit)] if recipes_limit else obj.recipes
+        serializer = serializers.ListSerializer(child=RecipeShortRead())
+        return serializer.to_representation(recipes)
 
