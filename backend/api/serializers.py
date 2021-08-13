@@ -117,7 +117,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         exclude = ['author']
 
     def to_representation(self, instance):
-        serializer = RecipeReadSerializer(instance)
+        serializer = RecipeReadSerializer(instance, context=self.context)
         return serializer.data
 
     def create(self, validated_data):
