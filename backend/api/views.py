@@ -41,8 +41,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
-        is_in_shopping_cart = bool(int(self.request.query_params.get('is_in_shopping_cart', 0)))
-        is_favorited = bool(int(self.request.query_params.get('is_favorited', 0)))
+        is_in_shopping_cart = bool(self.request.query_params.get('is_in_shopping_cart'))
+        is_favorited = bool(self.request.query_params.get('is_favorited'))
         if is_in_shopping_cart:
             queryset = queryset.filter(shopping_carts__user=self.request.user)
         if is_favorited:
