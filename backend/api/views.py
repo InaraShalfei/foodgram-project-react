@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets, permissions, status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from api.filters import RecipeFilter
@@ -35,10 +36,8 @@ class IngredientViewSet(ViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeReadSerializer
     filter_backends = [DjangoFilterBackend]
     filter_class = RecipeFilter
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
@@ -51,9 +50,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return queryset
 
     def get_permissions(self):
-        if self.action == 'put' or 'delete':
-            return OwnerOrReadOnly(),
-        return super().get_permissions()
+        if self.action == 'put' or self.action == 'delete':
+            permission_classes = [OwnerOrReadOnly]
+        else:
+            permission_classes = [IsAuthenticatedOrReadOnly]
+        return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'list']:
