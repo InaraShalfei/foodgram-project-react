@@ -22,12 +22,15 @@ class UserViewSet(djoser.views.UserViewSet):
         followed = User.objects.get(pk=pk)
         follower = request.user
         if request.method == 'GET':
-            UserFollow.objects.get_or_create(follower=follower, followed=followed)
+            UserFollow.objects.get_or_create(follower=follower,
+                                             followed=followed)
             serializer = UserFollowedSerializer(context=self.get_serializer_context())
-            return Response(serializer.to_representation(instance=followed), status=status.HTTP_201_CREATED)
+            return Response(serializer.to_representation(instance=followed),
+                            status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
-            UserFollow.objects.filter(follower=follower, followed=followed).delete()
+            UserFollow.objects.filter(follower=follower,
+                                      followed=followed).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get'], url_path='subscriptions',
@@ -36,7 +39,9 @@ class UserViewSet(djoser.views.UserViewSet):
         subscriptions = UserFollow.objects.filter(follower=request.user).all()
         paginator = PageNumberPagination()
         paginator.page_size_query_param = 'limit'
-        subscripitons_page = paginator.paginate_queryset(subscriptions, request=request)
+        subscripitons_page = paginator.paginate_queryset(subscriptions,
+                                                         request=request)
         followed_list = [subscription.followed for subscription in subscripitons_page]
-        serializer = ListSerializer(child=UserFollowedSerializer(), context=self.get_serializer_context())
+        serializer = ListSerializer(child=UserFollowedSerializer(),
+                                    context=self.get_serializer_context())
         return paginator.get_paginated_response(serializer.to_representation(followed_list))

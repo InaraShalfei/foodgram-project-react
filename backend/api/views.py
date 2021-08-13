@@ -6,11 +6,11 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from api.filters import RecipeFilter
-from api.models import Tag, Ingredient, Recipe, FavoriteRecipe, ShoppingCart
+from api.models import FavoriteRecipe, Ingredient, Recipe, ShoppingCart, Tag
 from api.permissions import OwnerOrReadOnly
 from api.serializers import (
-    TagSerializer, IngredientSerializer,
-    RecipeWriteSerializer, RecipeReadSerializer, FavoriteRecipeSerializer, ShoppingCartSerializer
+    FavoriteRecipeSerializer, IngredientSerializer,  RecipeReadSerializer,
+    RecipeWriteSerializer, ShoppingCartSerializer, TagSerializer,
 )
 
 
@@ -66,14 +66,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         context.update({"user": self.request.user})
         return context
 
-    @action(detail=True, methods=['get', 'delete'], url_path='favorite', permission_classes=permissions.IsAuthenticatedOrReadOnly)
+    @action(detail=True, methods=['get', 'delete'], url_path='favorite',
+            permission_classes=permissions.IsAuthenticatedOrReadOnly)
     def favorite(self, request, pk):
         recipe = Recipe.objects.get(pk=pk)
         user = request.user
         if request.method == 'GET':
             favorite_recipe, created = FavoriteRecipe.objects.get_or_create(user=user, recipe=recipe)
             serializer = FavoriteRecipeSerializer()
-            return Response(serializer.to_representation(instance=favorite_recipe), status=status.HTTP_201_CREATED)
+            return Response(serializer.to_representation(instance=favorite_recipe),
+                            status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
             FavoriteRecipe.objects.filter(user=user, recipe=recipe).delete()
@@ -87,7 +89,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == 'GET':
             recipe, created = ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
             serializer = ShoppingCartSerializer()
-            return Response(serializer.to_representation(instance=recipe), status=status.HTTP_201_CREATED)
+            return Response(serializer.to_representation(instance=recipe),
+                            status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
             ShoppingCart.objects.filter(user=user, recipe=recipe).delete()
@@ -104,10 +107,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 measurement_unit = recipe_ingredient.ingredient.measurement_unit
                 amount = recipe_ingredient.amount
                 if name not in shopping_list:
-                    shopping_list[name] = {'name': name, 'measurement_unit': measurement_unit, 'amount': amount}
+                    shopping_list[name] = {'name': name,
+                                           'measurement_unit': measurement_unit, 'amount': amount}
                 else:
                     shopping_list[name]['amount'] += amount
-        content = [f'{item["name"]} ({item["measurement_unit"]}) - {item["amount"]}\n' for item in shopping_list.values()]
+        content = [f'{item["name"]} ({item["measurement_unit"]}) - {item["amount"]}\n'
+                   for item in shopping_list.values()]
         filename = 'shopping_list.txt'
         response = HttpResponse(content, content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
