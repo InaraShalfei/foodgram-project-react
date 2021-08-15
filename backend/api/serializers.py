@@ -23,8 +23,10 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientReadSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True, source='ingredient.id')
-    name = serializers.CharField(read_only=True, source='ingredient.name')
+    id = serializers.CharField(read_only=True,
+                               source='ingredient.id')
+    name = serializers.CharField(read_only=True,
+                                 source='ingredient.name')
     measurement_unit = serializers.CharField(read_only=True,
                                              source='ingredient.measurement_unit')
 
@@ -36,9 +38,11 @@ class RecipeIngredientReadSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = RecipeIngredientReadSerializer(many=True,
-                                                 read_only=True, source='recipe_ingredients')
+                                                 read_only=True,
+                                                 source='recipe_ingredients')
     tags = serializers.SlugRelatedField(many=True,
-                                        queryset=Tag.objects.all(), slug_field='slug')
+                                        queryset=Tag.objects.all(),
+                                        slug_field='slug')
     author = CustomUserSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField('get_is_favorited')
     is_in_shopping_cart = serializers.SerializerMethodField('get_is_in_shopping_cart')
@@ -75,23 +79,27 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = RecipeIngredientWriteSerializer(many=True)
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(many=True,
+                                              queryset=Tag.objects.all())
 
     class Meta:
         model = Recipe
         exclude = ['author']
 
     def to_representation(self, instance):
-        serializer = RecipeReadSerializer(instance, context=self.context)
+        serializer = RecipeReadSerializer(instance,
+                                          context=self.context)
         return serializer.data
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(author=self.context.get('user'), **validated_data)
+        recipe = Recipe.objects.create(author=self.context.get('user'),
+                                       **validated_data)
         for item in ingredients:
             RecipeIngredient.objects.create(amount=item.pop('amount'),
-                                            ingredient=item.pop('id'), recipe=recipe)
+                                            ingredient=item.pop('id'),
+                                            recipe=recipe)
         recipe.tags.set(tags)
         return recipe
 
@@ -101,7 +109,8 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         RecipeIngredient.objects.filter(recipe=instance).delete()
         for item in ingredients:
             RecipeIngredient.objects.create(amount=item.pop('amount'),
-                                            ingredient=item.pop('id'), recipe=instance)
+                                            ingredient=item.pop('id'),
+                                            recipe=instance)
         for (key, value) in validated_data.items():
             setattr(instance, key, value)
         instance.save()
@@ -110,11 +119,14 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
 
 class FavoriteRecipeSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True, source='recipe.id')
+    id = serializers.CharField(read_only=True,
+                               source='recipe.id')
     cooking_time = serializers.CharField(read_only=True,
                                          source='recipe.cooking_time')
-    image = serializers.CharField(read_only=True, source='recipe.image')
-    name = serializers.CharField(read_only=True, source='recipe.name')
+    image = serializers.CharField(read_only=True,
+                                  source='recipe.image')
+    name = serializers.CharField(read_only=True,
+                                 source='recipe.name')
 
     class Meta:
         fields = ('id', 'cooking_time', 'name', 'image')
@@ -125,8 +137,10 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True, source='recipe.id')
     cooking_time = serializers.CharField(read_only=True,
                                          source='recipe.cooking_time')
-    image = serializers.CharField(read_only=True, source='recipe.image')
-    name = serializers.CharField(read_only=True, source='recipe.name')
+    image = serializers.CharField(read_only=True,
+                                  source='recipe.image')
+    name = serializers.CharField(read_only=True,
+                                 source='recipe.name')
 
     class Meta:
         fields = ('id', 'cooking_time', 'name', 'image')
