@@ -63,7 +63,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         context = super(RecipeViewSet, self).get_serializer_context()
-        context.update({"user": self.request.user})
+        context.update({'user': self.request.user})
         return context
 
     @action(detail=True, methods=['get', 'delete'], url_path='favorite',
