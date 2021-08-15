@@ -1,4 +1,5 @@
 import djoser.views
+from django.shortcuts import get_object_or_404
 
 from rest_framework import permissions, status
 from rest_framework.decorators import action
@@ -19,7 +20,7 @@ class UserViewSet(djoser.views.UserViewSet):
     @action(detail=False, methods=['get', 'delete'], url_path='subscribe',
             permission_classes=permissions.IsAuthenticated)
     def subscribe(self, request, pk):
-        followed = User.objects.get(pk=pk)
+        followed = get_object_or_404(User, pk=pk)
         follower = request.user
         if request.method == 'GET':
             UserFollow.objects.get_or_create(follower=follower,
