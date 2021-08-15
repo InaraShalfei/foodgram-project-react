@@ -37,7 +37,7 @@ class UserViewSet(djoser.views.UserViewSet):
     @action(detail=True, methods=['get'], url_path='subscriptions',
             permission_classes=permissions.IsAuthenticated)
     def subscriptions(self, request):
-        subscriptions = UserFollow.objects.filter(follower=request.user).all()
+        subscriptions = UserFollow.objects.filter(follower=request.user)
         paginator = PageNumberPagination()
         paginator.page_size_query_param = 'limit'
         subscripitons_page = paginator.paginate_queryset(subscriptions,
