@@ -45,7 +45,8 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag, related_name='recipes')
     text = models.TextField(max_length=1000, verbose_name='description')
     cooking_time = models.IntegerField(verbose_name='time',
-                                       validators=[MinValueValidator(1)])
+                                       validators=[MinValueValidator(limit_value=1,
+                                                                     message='Time must be >= 1 minute.')])
     image = models.ImageField(upload_to='media')
     creation_date = models.DateTimeField('Date of creation',
                                          db_index=True, auto_now=True)
