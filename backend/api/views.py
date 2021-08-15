@@ -60,13 +60,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = Recipe.objects.get(pk=pk)
         user = request.user
         if request.method == 'GET':
-            favorite_recipe, created = FavoriteRecipe.objects.get_or_create(user=user, recipe=recipe)
+            favorite_recipe, created = FavoriteRecipe.objects.get_or_create(
+                user=user, recipe=recipe
+            )
             serializer = FavoriteRecipeSerializer()
-            return Response(serializer.to_representation(instance=favorite_recipe),
-                            status=status.HTTP_201_CREATED)
+            return Response(serializer.to_representation
+                            (instance=favorite_recipe),
+                            status=status.HTTP_201_CREATED
+                            )
 
         if request.method == 'DELETE':
-            FavoriteRecipe.objects.filter(user=user, recipe=recipe).delete()
+            FavoriteRecipe.objects.filter(user=user,
+                                          recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get', 'delete'], url_path='shopping_cart',
@@ -75,13 +80,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = Recipe.objects.get(pk=pk)
         user = request.user
         if request.method == 'GET':
-            recipe, created = ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
+            recipe, created = ShoppingCart.objects.get_or_create(
+                user=user, recipe=recipe
+            )
             serializer = ShoppingCartSerializer()
             return Response(serializer.to_representation(instance=recipe),
                             status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
-            ShoppingCart.objects.filter(user=user, recipe=recipe).delete()
+            ShoppingCart.objects.filter(user=user,
+                                        recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'], url_path='download_shopping_cart',
@@ -96,7 +104,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 amount = recipe_ingredient.amount
                 if name not in shopping_list:
                     shopping_list[name] = {'name': name,
-                                           'measurement_unit': measurement_unit, 'amount': amount}
+                                           'measurement_unit': measurement_unit,
+                                           'amount': amount}
                 else:
                     shopping_list[name]['amount'] += amount
         content = [f'{item["name"]} ({item["measurement_unit"]}) - {item["amount"]}\n'
