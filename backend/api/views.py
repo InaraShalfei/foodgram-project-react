@@ -2,13 +2,12 @@ from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets, permissions, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from api.filters import RecipeFilter
 from api.mixins import ViewSet
 from api.models import FavoriteRecipe, Ingredient, Recipe, ShoppingCart, Tag
-from api.permissions import OwnerOrReadOnly
+from api.permissions import CustomPermissions
 from api.serializers import (
     FavoriteRecipeSerializer, IngredientSerializer,  RecipeReadSerializer,
     RecipeWriteSerializer, ShoppingCartSerializer, TagSerializer,
@@ -33,6 +32,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_class = RecipeFilter
+    permission_classes = [CustomPermissions]
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
@@ -43,13 +43,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if is_favorited:
             queryset = queryset.filter(favorite_recipes__user=self.request.user)
         return queryset
-
-    def get_permissions(self):
-        if self.action == 'put' or self.action == 'delete':
-            permission_classes = [OwnerOrReadOnly]
-        else:
-            permission_classes = [IsAuthenticatedOrReadOnly]
-        return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'list']:
