@@ -10,14 +10,22 @@ class RecipeFilter(filters.FilterSet):
         to_field_name='slug',
     )
     author = filters.CharFilter(lookup_expr='exact')
-    is_in_shopping_cart = filters.BooleanFilter(field_name='is_in_shopping_cart', method='filter')
-    is_favorited = filters.BooleanFilter(field_name='is_favorited', method='filter')
+    is_in_shopping_cart = filters.BooleanFilter(
+        field_name='is_in_shopping_cart', method='filter'
+    )
+    is_favorited = filters.BooleanFilter(
+        field_name='is_favorited', method='filter'
+    )
 
     def filter(self, queryset, name, value):
         if name == 'is_in_shopping_cart' and value is True:
-            queryset = queryset.filter(shopping_carts__user=self.request.user)
+            queryset = queryset.filter(
+                shopping_carts__user=self.request.user
+            )
         if name == 'is_favorited' and value is True:
-            queryset = queryset.filter(favorite_recipes__user=self.request.user)
+            queryset = queryset.filter(
+                favorite_recipes__user=self.request.user
+            )
         return queryset
 
     class Meta:

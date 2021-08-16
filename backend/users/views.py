@@ -18,14 +18,16 @@ class UserViewSet(djoser.views.UserViewSet):
     queryset = User.objects.all()
 
     @action(detail=False, methods=['get', 'delete'], url_path='subscribe',
-            permission_classes=permissions.IsAuthenticated)
+            permission_classes=[permissions.IsAuthenticated])
     def subscribe(self, request, pk):
         followed = get_object_or_404(User, pk=pk)
         follower = request.user
         if request.method == 'GET':
             UserFollow.objects.get_or_create(follower=follower,
                                              followed=followed)
-            serializer = UserFollowedSerializer(context=self.get_serializer_context())
+            serializer = UserFollowedSerializer(
+                context=self.get_serializer_context()
+            )
             return Response(serializer.to_representation(instance=followed),
                             status=status.HTTP_201_CREATED)
 
@@ -35,12 +37,17 @@ class UserViewSet(djoser.views.UserViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get'], url_path='subscriptions',
-            permission_classes=permissions.IsAuthenticated)
+            permission_classes=[permissions.IsAuthenticated])
     def subscriptions(self, request):
-        authors_queryset = User.objects.filter(user_followed__follower=request.user)
+        authors_queryset = User.objects.filter(
+            user_followed__follower=request.user
+        )
         paginator = PageNumberPagination()
         paginator.page_size_query_param = 'limit'
-        authors = paginator.paginate_queryset(authors_queryset, request=request)
+        authors = paginator.paginate_queryset(authors_queryset,
+                                              request=request)
         serializer = ListSerializer(child=UserFollowedSerializer(),
                                     context=self.get_serializer_context())
-        return paginator.get_paginated_response(serializer.to_representation(authors))
+        return paginator.get_paginated_response(
+            serializer.to_representation(authors)
+        )
