@@ -50,7 +50,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeWriteSerializer
 
     def get_serializer_context(self):
-        context = super(RecipeViewSet, self).get_serializer_context()
+        context = super().get_serializer_context()
         context.update({'user': self.request.user})
         return context
 
