@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from api.filters import RecipeFilter
 from api.mixins import ViewSet
 from api.models import FavoriteRecipe, Ingredient, Recipe, ShoppingCart, Tag
-from api.permissions import CustomPermissions
+from api.permissions import OwnerOrReadOnly
 from api.serializers import (
     FavoriteRecipeSerializer, IngredientSerializer,  RecipeReadSerializer,
     RecipeWriteSerializer, ShoppingCartSerializer, TagSerializer,
@@ -32,7 +32,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_class = RecipeFilter
-    permission_classes = [CustomPermissions]
+    permission_classes = [OwnerOrReadOnly]
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'list']:
@@ -45,7 +45,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return context
 
     @action(detail=True, methods=['get', 'delete'], url_path='favorite',
-            permission_classes=permissions.IsAuthenticatedOrReadOnly)
+            permission_classes=[permissions.IsAuthenticatedOrReadOnly])
     def favorite(self, request, pk):
         recipe = Recipe.objects.get(pk=pk)
         user = request.user
@@ -65,7 +65,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['get', 'delete'], url_path='shopping_cart',
-            permission_classes=permissions.IsAuthenticatedOrReadOnly)
+            permission_classes=[permissions.IsAuthenticatedOrReadOnly])
     def shopping_cart(self, request, pk):
         recipe = Recipe.objects.get(pk=pk)
         user = request.user
@@ -83,7 +83,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'], url_path='download_shopping_cart',
-            permission_classes=permissions.IsAuthenticated)
+            permission_classes=[permissions.IsAuthenticated])
     def shopping_list(self, request):
         shopping_cart = ShoppingCart.objects.filter(user=request.user).all()
         shopping_list = {}
