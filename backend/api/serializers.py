@@ -27,8 +27,9 @@ class RecipeIngredientReadSerializer(serializers.ModelSerializer):
                                source='ingredient.id')
     name = serializers.CharField(read_only=True,
                                  source='ingredient.name')
-    measurement_unit = serializers.CharField(read_only=True,
-                                             source='ingredient.measurement_unit')
+    measurement_unit = serializers.CharField(
+        read_only=True, source='ingredient.measurement_unit'
+    )
 
     class Meta:
         fields = ('id', 'name', 'measurement_unit', 'amount')
@@ -45,7 +46,9 @@ class RecipeReadSerializer(serializers.ModelSerializer):
                                         slug_field='slug')
     author = CustomUserSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField('get_is_favorited')
-    is_in_shopping_cart = serializers.SerializerMethodField('get_is_in_shopping_cart')
+    is_in_shopping_cart = serializers.SerializerMethodField(
+        'get_is_in_shopping_cart'
+    )
 
     class Meta:
         fields = ('id', 'author', 'name', 'ingredients', 'tags', 'text', 'image',
