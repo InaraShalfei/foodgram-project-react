@@ -51,17 +51,22 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = ('id', 'author', 'name', 'ingredients', 'tags', 'text', 'image',
-                  'cooking_time', 'is_favorited', 'is_in_shopping_cart')
+        fields = (
+            'id', 'author', 'name', 'ingredients',
+            'tags', 'text', 'image', 'cooking_time',
+            'is_favorited', 'is_in_shopping_cart'
+        )
         model = Recipe
 
     def get_is_favorited(self, obj):
-        return FavoriteRecipe.objects.filter(recipe=obj,
-                                             user=self.context.get('user')).exists()
+        return FavoriteRecipe.objects.filter(
+            recipe=obj, user=self.context.get('user')
+        ).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        return ShoppingCart.objects.filter(recipe=obj,
-                                           user=self.context.get('user')).exists()
+        return ShoppingCart.objects.filter(
+            recipe=obj, user=self.context.get('user')
+        ).exists()
 
 
 class RecipeShortRead(serializers.ModelSerializer):
@@ -71,7 +76,9 @@ class RecipeShortRead(serializers.ModelSerializer):
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all()
+    )
     amount = serializers.IntegerField()
 
     class Meta:
@@ -82,8 +89,9 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = RecipeIngredientWriteSerializer(many=True)
-    tags = serializers.PrimaryKeyRelatedField(many=True,
-                                              queryset=Tag.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all()
+    )
 
     class Meta:
         model = Recipe
@@ -164,6 +172,9 @@ class UserFollowedSerializer(serializers.ModelSerializer, IsSubscribedMixin):
 
     def get_recipes(self, obj):
         recipes_limit = self.context.get('request').GET.get('recipes_limit')
-        recipes = obj.recipes.all()[:int(recipes_limit)] if recipes_limit else obj.recipes
+        recipes = (
+            obj.recipes.all()[:int(recipes_limit)]
+            if recipes_limit else obj.recipes
+        )
         serializer = serializers.ListSerializer(child=RecipeShortRead())
         return serializer.to_representation(recipes)
