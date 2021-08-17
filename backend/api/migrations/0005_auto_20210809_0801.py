@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('api', '0004_auto_20210808_1050'),
     ]
@@ -12,11 +11,13 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='recipe',
-            options={'ordering': ['-creation_date'], 'verbose_name': 'Recipe', 'verbose_name_plural': 'Recipes'},
+            options={'ordering': ['-creation_date'], 'verbose_name': 'Recipe',
+                     'verbose_name_plural': 'Recipes'},
         ),
         migrations.AddField(
             model_name='recipe',
             name='creation_date',
-            field=models.DateTimeField(auto_now=True, db_index=True, verbose_name='Date of creation'),
+            field=models.DateTimeField(auto_now=True, db_index=True,
+                                       verbose_name='Date of creation'),
         ),
     ]

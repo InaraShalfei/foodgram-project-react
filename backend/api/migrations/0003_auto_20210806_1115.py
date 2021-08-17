@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('api', '0002_alter_ingredient_measurement_unit'),
@@ -16,7 +15,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FavoriteRecipe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
             ],
             options={
                 'verbose_name': 'Favorite recipe',
@@ -25,24 +26,33 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='recipeingredient',
-            options={'verbose_name': 'Ingredient in recipe', 'verbose_name_plural': 'Ingredients in recipe'},
+            options={'verbose_name': 'Ingredient in recipe',
+                     'verbose_name_plural': 'Ingredients in recipe'},
         ),
         migrations.AddConstraint(
             model_name='recipeingredient',
-            constraint=models.UniqueConstraint(fields=('recipe', 'ingredient'), name='unique_recipe'),
+            constraint=models.UniqueConstraint(fields=('recipe', 'ingredient'),
+                                               name='unique_recipe'),
         ),
         migrations.AddField(
             model_name='favoriterecipe',
             name='recipe',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='favorite_recipes', to='api.recipe'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='favorite_recipes',
+                to='api.recipe'),
         ),
         migrations.AddField(
             model_name='favoriterecipe',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='favorite_recipes', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='favorite_recipes',
+                to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddConstraint(
             model_name='favoriterecipe',
-            constraint=models.UniqueConstraint(fields=('recipe', 'user'), name='unique_favorite'),
+            constraint=models.UniqueConstraint(fields=('recipe', 'user'),
+                                               name='unique_favorite'),
         ),
     ]

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('api', '0006_auto_20210810_1137'),
     ]
@@ -14,6 +13,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='recipe',
             name='cooking_time',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(limit_value=1, message='Time must be >= 1 minute.')], verbose_name='time'),
+            field=models.IntegerField(validators=[
+                django.core.validators.MinValueValidator(
+                    limit_value=1,
+                    message='Time must be >= 1 minute.')],
+                verbose_name='time'),
         ),
     ]

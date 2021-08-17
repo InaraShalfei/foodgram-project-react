@@ -7,7 +7,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -18,9 +17,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Ingredient',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='name')),
-                ('measurement_unit', models.CharField(max_length=20, unique=True, verbose_name='measuring unit')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
+                ('name', models.CharField(max_length=100, unique=True,
+                                          verbose_name='name')),
+                ('measurement_unit',
+                 models.CharField(max_length=20, unique=True,
+                                  verbose_name='measuring unit')),
             ],
             options={
                 'verbose_name': 'Ingredient',
@@ -30,10 +34,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Recipe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, unique=True, verbose_name='name')),
-                ('text', models.TextField(max_length=1000, verbose_name='description')),
-                ('cooking_time', models.IntegerField(validators=[django.core.validators.MinValueValidator(1)], verbose_name='time')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
+                ('name', models.CharField(max_length=200, unique=True,
+                                          verbose_name='name')),
+                ('text', models.TextField(max_length=1000,
+                                          verbose_name='description')),
+                ('cooking_time',
+                 models.IntegerField(
+                     validators=[django.core.validators.MinValueValidator(1)],
+                     verbose_name='time')),
                 ('image', models.ImageField(upload_to='media')),
             ],
             options={
@@ -44,17 +55,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RecipeIngredient',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.PositiveIntegerField(verbose_name='amount of ingredient')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
+                ('amount', models.PositiveIntegerField(
+                    verbose_name='amount of ingredient')),
             ],
         ),
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='name')),
-                ('slug', models.SlugField(max_length=100, unique=True, verbose_name='slug')),
-                ('color', models.CharField(max_length=100, unique=True, verbose_name='color')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
+                ('name', models.CharField(max_length=100, unique=True,
+                                          verbose_name='name')),
+                ('slug', models.SlugField(max_length=100, unique=True,
+                                          verbose_name='slug')),
+                ('color', models.CharField(max_length=100, unique=True,
+                                           verbose_name='color')),
             ],
             options={
                 'verbose_name': 'Tag',
@@ -64,27 +83,39 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='tag',
-            constraint=models.UniqueConstraint(fields=('slug',), name='unique_slug'),
+            constraint=models.UniqueConstraint(fields=('slug',),
+                                               name='unique_slug'),
         ),
         migrations.AddField(
             model_name='recipeingredient',
             name='ingredient',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipe_ingredients', to='api.ingredient'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='recipe_ingredients',
+                to='api.ingredient'),
         ),
         migrations.AddField(
             model_name='recipeingredient',
             name='recipe',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipe_ingredients', to='api.recipe'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='recipe_ingredients',
+                to='api.recipe'),
         ),
         migrations.AddField(
             model_name='recipe',
             name='author',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipes', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='recipes',
+                to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='recipe',
             name='ingredients',
-            field=models.ManyToManyField(related_name='recipes', through='api.RecipeIngredient', to='api.Ingredient'),
+            field=models.ManyToManyField(related_name='recipes',
+                                         through='api.RecipeIngredient',
+                                         to='api.Ingredient'),
         ),
         migrations.AddField(
             model_name='recipe',
