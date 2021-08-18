@@ -53,7 +53,7 @@ class Recipe(models.Model):
             limit_value=1, message='Time must be >= 1 minute.'
         )]
     )
-    image = models.ImageField(upload_to='media')
+    image = models.ImageField(upload_to='recipes')
     creation_date = models.DateTimeField('Date of creation',
                                          db_index=True, auto_now=True)
 
