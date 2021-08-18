@@ -4,6 +4,7 @@ import six
 import uuid
 import webcolors as webcolors
 
+from django.conf import settings
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
@@ -41,3 +42,6 @@ class Base64ImageField(serializers.ImageField):
         extension = 'jpg' if extension == 'jpeg' else extension
 
         return extension
+
+    def to_representation(self, value):
+        return settings.MEDIA_URL + super().to_representation(value)
