@@ -1,15 +1,14 @@
 import djoser.views
-from django.shortcuts import get_object_or_404
 
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
-
 from api.models import UserFollow
-from api.serializers import UserFollowedSerializer
 from users.models import User
+from api.serializers import UserFollowedSerializer
 from users.serializers import CustomUserSerializer
 
 
@@ -35,6 +34,7 @@ class UserViewSet(djoser.views.UserViewSet):
             UserFollow.objects.filter(follower=follower,
                                       followed=followed).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        return
 
     @action(detail=True, methods=['get'], url_path='subscriptions',
             permission_classes=[permissions.IsAuthenticated])

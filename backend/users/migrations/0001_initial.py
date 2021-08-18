@@ -2,7 +2,6 @@
 
 import django.contrib.auth.models
 import django.utils.timezone
-
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import migrations, models
 

@@ -1,6 +1,5 @@
 from djoser.conf import settings
 from djoser.serializers import UserSerializer
-
 from users.mixins import IsSubscribedMixin
 from users.models import User
 
