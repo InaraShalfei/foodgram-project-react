@@ -5,7 +5,6 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
-
 from api.models import UserFollow
 from api.serializers import UserFollowedSerializer
 from users.models import User
