@@ -41,9 +41,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientReadSerializer(many=True,
                                                  read_only=True,
                                                  source='recipe_ingredients')
-    tags = serializers.SlugRelatedField(many=True,
-                                        queryset=Tag.objects.all(),
-                                        slug_field='slug')
+    tags = TagSerializer(many=True)
     author = CustomUserSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField('get_is_favorited')
     is_in_shopping_cart = serializers.SerializerMethodField(
@@ -70,6 +68,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 
 class RecipeShortRead(serializers.ModelSerializer):
+    image = Base64ImageField()
     class Meta:
         fields = ('id', 'cooking_time', 'name', 'image')
         model = Recipe
