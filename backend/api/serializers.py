@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.fields import Hex2NameColor, Base64ImageField
+from api.fields import Base64ImageField, Hex2NameColor
 from api.models import (FavoriteRecipe, Ingredient, Recipe,
                         RecipeIngredient,  ShoppingCart, Tag)
 from users.mixins import IsSubscribedMixin

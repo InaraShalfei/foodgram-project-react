@@ -1,10 +1,9 @@
 import base64
 import imghdr
+import uuid
 
 import six
-import uuid
 import webcolors as webcolors
-
 from django.conf import settings
 from django.core.files.base import ContentFile
 from rest_framework import serializers

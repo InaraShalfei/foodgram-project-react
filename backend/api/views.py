@@ -1,17 +1,17 @@
-from django.http import HttpResponse
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 
 from api.filters import RecipeFilter
 from api.mixins import ViewSet
 from api.models import FavoriteRecipe, Ingredient, Recipe, ShoppingCart, Tag
 from api.permissions import OwnerOrReadOnly
-from api.serializers import (
-    FavoriteRecipeSerializer, IngredientSerializer,  RecipeReadSerializer,
-    RecipeWriteSerializer, ShoppingCartSerializer, TagSerializer,
-)
+from api.serializers import (FavoriteRecipeSerializer, IngredientSerializer,
+                             RecipeReadSerializer, RecipeWriteSerializer,
+                             ShoppingCartSerializer, TagSerializer)
 
 
 class TagViewSet(ViewSet):
