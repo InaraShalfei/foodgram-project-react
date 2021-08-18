@@ -119,6 +119,7 @@ REST_FRAMEWORK = {
         'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 6,
     'SEARCH_PARAM': 'name',
+    'UPLOADED_FILES_USE_URL': False,
 }
 
 SIMPLE_JWT = {
