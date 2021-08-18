@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from users.models import User
+
 from .models import Ingredient, Tag, Recipe, RecipeIngredient
 
 

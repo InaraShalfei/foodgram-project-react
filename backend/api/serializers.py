@@ -69,6 +69,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class RecipeShortRead(serializers.ModelSerializer):
     image = Base64ImageField()
+
     class Meta:
         fields = ('id', 'cooking_time', 'name', 'image')
         model = Recipe

@@ -1,5 +1,6 @@
-import imghdr
 import base64
+import imghdr
+
 import six
 import uuid
 import webcolors as webcolors
