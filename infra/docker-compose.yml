@@ -6,9 +6,7 @@ volumes:
 services:
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: inarash/foodgram_frontend
     volumes:
       - ../frontend/:/app/result_build/
 
@@ -21,9 +19,7 @@ services:
       - ./.env
 
   web:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: inarash/foodgram_backend
     restart: always
     volumes:
       - ../backend:/code/
