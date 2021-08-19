@@ -1,8 +1,9 @@
 # praktikum_new_diplom
 ![example workflow](https://github.com/InaraShalfei/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
-## Load ingredients dictionary
+## Project IP
+foodgram-project-react: http://193.32.218.214/
 
-```bash
-python manage.py loaddata data/ingredients.json
-```
+## Admin login and password
+login:inara@example.com
+password:123456
