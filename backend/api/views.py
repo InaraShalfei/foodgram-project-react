@@ -36,8 +36,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
-            return AllowAny()
-        return OwnerOrReadOnly()
+            return OwnerOrReadOnly()
+        return AllowAny()
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'list']:
