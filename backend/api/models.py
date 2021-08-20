@@ -39,7 +39,9 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=200, verbose_name='name', unique=True)
+    name = models.CharField(
+        max_length=200, verbose_name='name', unique=True,
+        error_messages={'unique': 'Такой рецепт уже существует'})
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes')
     ingredients = models.ManyToManyField(
