@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
 
 from api.models import UserFollow
+from api.pagination import PageNumberWithCustomLimitPagination
 from api.serializers import UserFollowedSerializer
 from users.models import User
 from users.serializers import CustomUserSerializer
@@ -41,8 +42,7 @@ class UserViewSet(djoser.views.UserViewSet):
         authors_queryset = User.objects.filter(
             user_followed__follower=request.user
         )
-        paginator = PageNumberPagination()
-        paginator.page_size_query_param = 'limit'
+        paginator = PageNumberWithCustomLimitPagination()
         authors = paginator.paginate_queryset(authors_queryset,
                                               request=request)
         serializer = ListSerializer(child=UserFollowedSerializer(),
