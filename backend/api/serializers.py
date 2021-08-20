@@ -91,6 +91,8 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = RecipeIngredientWriteSerializer(many=True)
+    cooking_time = serializers.IntegerField(min_value=1, error_messages={
+            'min_value': 'Значение должно быть >= 1!'})
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all()
     )
