@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from api.filters import RecipeFilter
 from api.mixins import ViewSet
 from api.models import FavoriteRecipe, Ingredient, Recipe, ShoppingCart, Tag
+from api.pagination import paginate
 from api.permissions import OwnerOrReadOnly
 from api.serializers import (FavoriteRecipeSerializer, IngredientSerializer,
                              RecipeReadSerializer, RecipeWriteSerializer,
@@ -63,6 +64,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                           recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @paginate
     @action(detail=True, methods=['get', 'delete'], url_path='shopping_cart',
             permission_classes=[permissions.IsAuthenticatedOrReadOnly])
     def shopping_cart(self, request, pk):
