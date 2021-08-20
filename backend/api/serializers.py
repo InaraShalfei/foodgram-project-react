@@ -109,10 +109,19 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(author=self.context.get('user'),
                                        **validated_data)
+        recipe_ingredients = {}
         for item in ingredients:
-            RecipeIngredient.objects.create(amount=item.pop('amount'),
-                                            ingredient=item.pop('id'),
-                                            recipe=recipe)
+            amount = item.pop('amount')
+            ingredient = item.pop('id')
+            if ingredient.id not in recipe_ingredients:
+                recipe_ingredients[ingredient.id] = RecipeIngredient(
+                    amount=amount,
+                    ingredient=ingredient,
+                    recipe=recipe)
+            else:
+                recipe_ingredients[ingredient.id].amount += amount
+        for recipe_ingredient in recipe_ingredients.values():
+            recipe_ingredient.save()
         recipe.tags.set(tags)
         return recipe
 
