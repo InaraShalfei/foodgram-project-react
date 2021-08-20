@@ -2,7 +2,6 @@ from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from api.filters import RecipeFilter
@@ -33,11 +32,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_class = RecipeFilter
-
-    def get_permissions(self):
-        if self.action == 'list' or self.action == 'retrieve':
-            return OwnerOrReadOnly()
-        return AllowAny()
+    permission_classes = [OwnerOrReadOnly]
 
     def get_serializer_class(self):
         if self.action in ['retrieve', 'list']:
