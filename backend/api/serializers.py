@@ -81,7 +81,12 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all()
     )
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(
+        min_value=1,
+        error_messages={
+            'min_value': 'Разрешено только целое положительное число!'
+        }
+    )
 
     class Meta:
         fields = ('id', 'amount')
