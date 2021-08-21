@@ -1,7 +1,6 @@
 ![example workflow](https://github.com/InaraShalfei/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
-**Проект foodram-project-react** 
-
+# Проект foodgram-project-react 
 
 Cайт Foodgram, «Продуктовый помощник». 
 На этом сервисе пользователи могут публиковать рецепты,
@@ -13,16 +12,21 @@ Cайт Foodgram, «Продуктовый помощник».
 
 ## Локальный запуск проекта:
 Чтобы запустить проект локально необходимо выполнить следующие команды:
-- cd infra/
-- docker-compose up
-Для заполнения проекта начальными данными выполнить следующую команду:
-- docker-compose exec web bash python manage.py loaddata <file.name>
+```bash
+cd infra/
+docker-compose up
+```
 
+Для заполнения проекта начальными данными выполнить следующую команду:
+```bash
+docker-compose exec web bash python manage.py loaddata data/recipe.json
+```
 
 ## IP проекта:
 foodgram-project-react: http://193.32.218.214/
 
-
 ## Логин и пароль для входа от имени администратора:
-login:inara@example.com
-password:123456
+```
+login: inara@example.com
+password: 123456
+```
