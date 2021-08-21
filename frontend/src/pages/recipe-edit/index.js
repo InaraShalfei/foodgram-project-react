@@ -137,7 +137,15 @@ const RecipeEdit = ({ onEdit }) => {
               if (non_field_errors) {
                 alert(non_field_errors.join(', '))
               }
-              const errors = Object.values(err)
+              function grabNestedErrors(obj) {
+                if (typeof obj === 'string') {
+                  errors.push(obj)
+                } else {
+                  Object.values(obj).forEach(item => grabNestedErrors(item))
+                }
+              }
+              const errors = []
+              grabNestedErrors(err)
               if (errors) {
                 alert(errors.join(', '))
               }
