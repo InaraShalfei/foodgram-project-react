@@ -22,7 +22,6 @@ services:
     image: inarash/foodgram_backend
     restart: always
     volumes:
-      # - ../backend:/code/
       - static_value:/code/static/
       - media_value:/code/media/
     depends_on:
